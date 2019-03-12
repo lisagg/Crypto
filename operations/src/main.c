@@ -35,17 +35,18 @@ void add_128(int* A, int* B, int* result);
 void add(int *tab_res, int num,...);
 int isBiggerOrEqual(int* A, int* B);
 void sub_128(int* A, int* B, int* result);
+void sub(int *tab_res, int num,...);
 
 
 int main(void){
 	// Pas de retenues possibles pour le dernier tour
-	// Bit de signe à '0' en début de chaque élément du tableau
+	// Bit de signe ï¿½ '0' en dï¿½but de chaque ï¿½lï¿½ment du tableau
 	int A[5] = {0b00000000000000000000000000000100, 0b00000000000000000000000000000111, 0b01000000000000000000000000000110, 0b00000000000000000000000000000011, 0b00000000000000000000000000000000};
 	int B[5] = {0b00000000000000000000000000000000, 0b00000000000000000000000000000000, 0b01000000000000000000000000000100, 0b00000000000000000000000000000000, 0b00000000000000000000000000000001};
 	int C[5] = {0b00000000000000000000000000000010, 0b00000000000000000000000000000000, 0b01000000000000000000000000000100, 0b00000000000000000000000000000000, 0b00000000000000000000000000000001};
 	int tab_res[5] = {0, 0, 0, 0, 0};
 	add(tab_res, 3, A, B, C);
-
+	sub(tab_res, 2, A, B);
 	printf("resulat = %d, %d, %d, %d, %d\n", tab_res[0],tab_res[1],tab_res[2],tab_res[3], tab_res[4] );
 
 	//printf("resulat = %d, %d, %d, %d, %d\n", res[0],res[1],res[2],res[3], res[4] );
@@ -104,7 +105,7 @@ void sub_128(int* A, int* B, int* result) {
 			printf("problem detected!\n");
 	}
 	else
-		printf("A doit être supérieur ou égal à B.");
+		printf("A doit ï¿½tre supï¿½rieur ou ï¿½gal ï¿½ B.");
 }
 
 // retourne 1 si A >= B, 0 sinon
@@ -116,5 +117,21 @@ int isBiggerOrEqual(int* A, int* B) {
 			return 0;
 	}
 	return 1;
+}
+
+
+void sub(int *tab_res, int num,...) {
+   va_list valist;
+   int i;
+
+   /* initialize valist for num number of arguments */
+   va_start(valist, num);
+   tab_res = va_arg(valist, int*);
+   /* access all the arguments assigned to valist */
+   for (i = 1; i < num; i++) {
+	   sub_128( tab_res, va_arg(valist, int*), tab_res );
+   }
+   /* clean memory reserved for valist */
+   va_end(valist);
 }
 
