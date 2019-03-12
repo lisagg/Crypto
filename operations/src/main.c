@@ -33,6 +33,9 @@
 
 void add_128(int* A, int* B, int* result);
 void add(int *tab_res, int num,...);
+int isBiggerOrEqual(int* A, int* B);
+void sub_128(int* A, int* B, int* result);
+
 
 int main(void){
 	// Pas de retenues possibles pour le dernier tour
@@ -45,6 +48,8 @@ int main(void){
 
 	printf("resulat = %d, %d, %d, %d, %d\n", tab_res[0],tab_res[1],tab_res[2],tab_res[3], tab_res[4] );
 
+	//printf("resulat = %d, %d, %d, %d, %d\n", res[0],res[1],res[2],res[3], res[4] );
+	//printf("is bigger ? %d", isBiggerOrEqual(A, B));
 	fflush(stdout);
 
 	return 0;
@@ -67,7 +72,7 @@ void add(int *tab_res, int num,...) {
 void add_128(int* A, int* B, int* result) {
 	int carry = 0;
 
-	for (int i = 5 - 1; i >= 0; i--) {
+	for (int i = 4; i >= 0; i--) {
 		result[i] = A[i] + B[i] + carry;
 		if (result[i]<0) {
 			result[i] = result[i] + pow(2,31);
@@ -78,5 +83,38 @@ void add_128(int* A, int* B, int* result) {
 	}
 	if (result[4]<0)
 		printf("problem detected!\n");
+}
+
+void sub_128(int* A, int* B, int* result) {
+	int carry = 0;
+
+	// Si A > B, on effectue la soustraction
+	if (isBiggerOrEqual(A, B)) {
+		for (int i = 4; i >= 0; i--) {
+			if (A[i] < B[i] + carry) {
+				result[i] = pow(2,31) + A[i] - B[i] - carry;
+				carry = 1;
+			}
+			else {
+				result[i] = A[i] - B[i] - carry;
+				carry = 0;
+			}
+		}
+		if (result[4]<0)
+			printf("problem detected!\n");
+	}
+	else
+		printf("A doit être supérieur ou égal à B.");
+}
+
+// retourne 1 si A >= B, 0 sinon
+int isBiggerOrEqual(int* A, int* B) {
+	for (int i = 0; i <= 4; i++) {
+		if (A[i] > B[i])
+			return 1;
+		else if (A[i] < B[i])
+			return 0;
+	}
+	return 1;
 }
 
