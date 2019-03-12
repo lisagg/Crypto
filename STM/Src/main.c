@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_host.h"
+#include "BigNumber.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -110,6 +111,20 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  long unsigned int base = 2;
+	  int reverse = 1;
+	  unsigned int *coeffs = (unsigned int*) malloc(3 * sizeof(unsigned int));
+	  coeffs[0] = 0;
+	  coeffs[1] = 2;
+	  coeffs[2] = 4;
+	  struct BigNumber a = bigNumber(base, reverse, coeffs);
+	  struct BigNumber b;
+	  egale(&a, &b);
+
+    return 0;
+}
+
+
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
 
