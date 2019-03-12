@@ -45,31 +45,16 @@ int main(void){
 	int B[5] = {0b00000000000000000000000000000000, 0b00000000000000000000000000000000, 0b01000000000000000000000000000100, 0b00000000000000000000000000000000, 0b00000000000000000000000000000001};
 	int C[5] = {0b00000000000000000000000000000010, 0b00000000000000000000000000000000, 0b01000000000000000000000000000100, 0b00000000000000000000000000000000, 0b00000000000000000000000000000001};
 	int tab_res[5] = {0, 0, 0, 0, 0};
-	add(tab_res, 3, A, B, C);
-	sub(tab_res, 2, A, B);
+
+	sub(tab_res, 3, A, B, C);
 	printf("resulat = %d, %d, %d, %d, %d\n", tab_res[0],tab_res[1],tab_res[2],tab_res[3], tab_res[4] );
 
-	//printf("resulat = %d, %d, %d, %d, %d\n", res[0],res[1],res[2],res[3], res[4] );
-	//printf("is bigger ? %d", isBiggerOrEqual(A, B));
 	fflush(stdout);
 
 	return 0;
 }
 
-void add(int *tab_res, int num,...) {
-   va_list valist;
-   int i;
-
-   /* initialize valist for num number of arguments */
-   va_start(valist, num);
-   /* access all the arguments assigned to valist */
-   for (i = 0; i < num; i++) {
-	   add_128(va_arg(valist, int*), tab_res, tab_res );
-   }
-   /* clean memory reserved for valist */
-   va_end(valist);
-}
-
+/* additionne 2 entiers de 128 bits représentés en tableaux de 32bits*/
 void add_128(int* A, int* B, int* result) {
 	int carry = 0;
 
@@ -86,6 +71,7 @@ void add_128(int* A, int* B, int* result) {
 		printf("problem detected!\n");
 }
 
+/* soustrait 2 entiers de 128 bits représentés en tableaux de 32bits*/
 void sub_128(int* A, int* B, int* result) {
 	int carry = 0;
 
@@ -108,6 +94,41 @@ void sub_128(int* A, int* B, int* result) {
 		printf("A doit ï¿½tre supï¿½rieur ou ï¿½gal ï¿½ B.");
 }
 
+
+
+/*Fonction pour additionner 2 ou plus 128 bits représentés en tableaux de 32bits*/
+void add(int *tab_res, int num,...) {
+   va_list valist;
+   int i;
+
+   /* initialize valist for num number of arguments */
+   va_start(valist, num);
+   /* access all the arguments assigned to valist */
+   for (i = 0; i < num; i++) {
+	   add_128(va_arg(valist, int*), tab_res, tab_res );
+   }
+   /* clean memory reserved for valist */
+   va_end(valist);
+}
+
+/*Fonction pour soustraire 2 ou plus 128 bits représentés en tableaux de 32bits
+ * exemple sub(res, 3, A, B, C) met dans res A-B-C
+ * */
+void sub(int *tab_res, int num,...) {
+   va_list valist;
+   int i;
+
+   /* initialize valist for num number of arguments */
+   va_start(valist, num);
+   add_128(tab_res, va_arg(valist, int*), tab_res);
+   /* access all the arguments assigned to valist */
+   for (i = 1; i < num; i++) {
+	   sub_128( tab_res, va_arg(valist, int*), tab_res );
+   }
+   /* clean memory reserved for valist */
+   va_end(valist);
+}
+
 // retourne 1 si A >= B, 0 sinon
 int isBiggerOrEqual(int* A, int* B) {
 	for (int i = 0; i <= 4; i++) {
@@ -118,20 +139,3 @@ int isBiggerOrEqual(int* A, int* B) {
 	}
 	return 1;
 }
-
-
-void sub(int *tab_res, int num,...) {
-   va_list valist;
-   int i;
-
-   /* initialize valist for num number of arguments */
-   va_start(valist, num);
-   tab_res = va_arg(valist, int*);
-   /* access all the arguments assigned to valist */
-   for (i = 1; i < num; i++) {
-	   sub_128( tab_res, va_arg(valist, int*), tab_res );
-   }
-   /* clean memory reserved for valist */
-   va_end(valist);
-}
-
