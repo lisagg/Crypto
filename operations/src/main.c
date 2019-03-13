@@ -33,6 +33,7 @@
 #include <stdint.h>
 
 void add_128(int* A, int* B, int* result);
+void add_32(int* A, int* B, int * result, int* carry);
 void add(int *tab_res, int num,...);
 int isBiggerOrEqual(int* A, int* B);
 void sub_128(int* A, int* B, int* result);
@@ -73,6 +74,17 @@ void add_128(int* A, int* B, int* result) {
 	}
 	if (result[4]<0)
 		printf("problem detected!\n");
+}
+
+/* additionne deux entiers signé de 32bits*/
+void add_32(int* A, int* B, int * result, int* carry) {
+	*result = *A + *B;
+	if( *result < 0){
+		*result = *result + pow(2,31);
+		*carry = 1;
+	} else {
+		carry =0;
+	}
 }
 
 /* soustrait 2 entiers de 128 bits représentés en tableaux de 32bits*/
