@@ -38,7 +38,7 @@ void add(int *tab_res, int num,...);
 int isBiggerOrEqual(int* A, int* B);
 void sub_128(int* A, int* B, int* result);
 void sub(int *tab_res, int num,...);
-void mult_128(int* A, int* B, int* R, int* result);
+void mult_128(int* A, int* B, int* result);
 //void printDoubleArray(int* A);
 
 int main(void){
@@ -47,10 +47,9 @@ int main(void){
 	int A[5] = {0b00000000000000000000000000000100, 0b00000000000000000000000000000111, 0b01000000000000000000000000000110, 0b00000000001000000000000000000011, 0b00000100000000100000000000000000};
 	int B[5] = {0b00000000000000000000000000000010, 0b00000000000000001000000000000000, 0b01000000000000000000000000000100, 0b00000000010000000000000000100000, 0b00100000010000000000100000000001};
 	int C[5] = {0b00000000000000000000000000100010, 0b00000100000000000000000000000000, 0b01000000000000000000000000000100, 0b00000000000000000000000000000000, 0b00000000000000000000000000000001};
-	int tab_res[5] = {0, 0, 0, 0, 0};
-	int R[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-	mult_128(A, B, R, tab_res);
+	int tab_res[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	//printf("size = %d ", sizeof(tab_res)/sizeof(tab_res[0]));
+	mult_128(A, B, tab_res);
 	//sub(tab_res, 3, A, B, C);
 	//printf("resulat = %d, %d, %d, %d, %d\n", tab_res[0],tab_res[1],tab_res[2],tab_res[3], tab_res[4] );
 
@@ -156,7 +155,7 @@ int isBiggerOrEqual(int* A, int* B) {
 	return 1;
 }
 
-void mult_128(int* A, int* B, int* R, int* result) {
+void mult_128(int* A, int* B, int* result) {
 	int64_t tempo;
 	int tab[25][10] = {0};
 	int compteur = 0;
@@ -165,8 +164,24 @@ void mult_128(int* A, int* B, int* R, int* result) {
 			tempo = (int64_t)A[j]*(int64_t)B[i];
 			tab[compteur][9+i+j-8] = tempo & 0x7FFFFFFF; // Récupération des bits de poids faibles en mettant les bits de poids forts à 0
 			tab[compteur][9+i+j-9] = tempo >> 31; // Récupération des bits de poids forts en décalant vers la gauche
-			printf("i = %d, j = %d, A = %d, B = %d, tempo = %I64d, poids faibles = %d, poids forts = %d\n", i, j, A[j], B[i], tempo, tab[compteur][9+i+j-8], tab[compteur][9+i+j-9] );
+			//printf("i = %d, j = %d, A = %d, B = %d, tempo = %I64d, poids faibles = %d, poids forts = %d\n", i, j, A[j], B[i], tempo, tab[compteur][9+i+j-8], tab[compteur][9+i+j-9] );
 			compteur += 1;
+		}
+	}
+	int tempCarry = 0;
+	int tempResult = 0;
+	int carry = 0;
+	result = (int [10]){0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // On réinitialise R au cas où
+	for (int k = 9; k >= 0; k--) {
+		result[k] = carry;
+		carry = 0;
+		for (int l = 0; l < 25; l++) {
+			add_32(&result[k], &tab[l][k], &result[k], &tempCarry);
+			carry = carry + tempCarry;
+			tempCarry = 0;
+			//add_32(&tempResult, &result[k], &result[k], &tempCarry);
+			//printf(" k = %d, l = %d, tab = %d, carry = %d, result = %d\n", k, l, tab[l][k], carry, result[k]);
+			//carry = carry + tempCarry;
 		}
 	}
 //	for (int i = 0; i < sizeof(tab)/sizeof(tab[0]); i++) {
@@ -176,6 +191,10 @@ void mult_128(int* A, int* B, int* R, int* result) {
 //		}
 //		printf("\n");
 //	}
+
+	//printf("size = %d ", sizeof(result)/sizeof(result[0]));
+	for (int i = 0; i < 10; i++)
+		printf("%d ", result[i]);
 }
 
 //void printDoubleArray(int** A) {
