@@ -36,6 +36,7 @@ void add(int *tab_res, int num,...);
 int isBiggerOrEqual(int* A, int* B);
 void sub_128(int* A, int* B, int* result);
 void sub(int *tab_res, int num,...);
+void add_32(int* A, int* B, int * result, int* carry);
 
 
 int main(void){
@@ -54,7 +55,7 @@ int main(void){
 	return 0;
 }
 
-/* additionne 2 entiers de 128 bits représentés en tableaux de 32bits*/
+/* additionne 2 entiers de 128 bits reprï¿½sentï¿½s en tableaux de 32bits*/
 void add_128(int* A, int* B, int* result) {
 	int carry = 0;
 
@@ -71,7 +72,18 @@ void add_128(int* A, int* B, int* result) {
 		printf("problem detected!\n");
 }
 
-/* soustrait 2 entiers de 128 bits représentés en tableaux de 32bits*/
+/* additionne deux entiers signï¿½ de 32bits*/
+void add_32(int* A, int* B, int * result, int* carry) {
+	*result = *A + *B;
+	if( *result < 0){
+		*result = *result + pow(2,31);
+		*carry = 1;
+	} else {
+		carry =0;
+	}
+}
+
+/* soustrait 2 entiers de 128 bits reprï¿½sentï¿½s en tableaux de 32bits*/
 void sub_128(int* A, int* B, int* result) {
 	int carry = 0;
 
@@ -96,7 +108,7 @@ void sub_128(int* A, int* B, int* result) {
 
 
 
-/*Fonction pour additionner 2 ou plus 128 bits représentés en tableaux de 32bits*/
+/*Fonction pour additionner 2 ou plus 128 bits reprï¿½sentï¿½s en tableaux de 32bits*/
 void add(int *tab_res, int num,...) {
    va_list valist;
    int i;
@@ -111,7 +123,7 @@ void add(int *tab_res, int num,...) {
    va_end(valist);
 }
 
-/*Fonction pour soustraire 2 ou plus 128 bits représentés en tableaux de 32bits
+/*Fonction pour soustraire 2 ou plus 128 bits reprï¿½sentï¿½s en tableaux de 32bits
  * exemple sub(res, 3, A, B, C) met dans res A-B-C
  * */
 void sub(int *tab_res, int num,...) {
