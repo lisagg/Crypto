@@ -28,7 +28,7 @@
 */
 
 #include "operations.h"
-
+#include "librairie.h"
 
 int main(void){
 	// Pas de retenues possibles pour le dernier tour
