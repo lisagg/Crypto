@@ -10,4 +10,5 @@ int isBiggerOrEqual(int* A, int* B);
 void sub_128(int* A, int* B, int* result);
 void sub(int *tab_res, int num,...);
 void mult_128(int* A, int* B, int* result);
+void shiftLeft(int *A, int nb, int* resultat);
 //void printDoubleArray(int* A);

@@ -1,6 +1,6 @@
 #include "operations.h"
 
-/* additionne 2 entiers de 128 bits représentés en tableaux de 32bits*/
+/* additionne 2 entiers de 128 bits reprï¿½sentï¿½s en tableaux de 32bits*/
 void add_128(int* A, int* B, int* result) {
 	int carry = 0;
 
@@ -17,7 +17,7 @@ void add_128(int* A, int* B, int* result) {
 		printf("problem detected!\n");
 }
 
-/* additionne deux entiers signé de 32bits*/
+/* additionne deux entiers signï¿½ de 32bits*/
 void add_32(int* A, int* B, int * result, int* carry) {
 	*result = *A + *B;
 	if( *result < 0){
@@ -28,7 +28,7 @@ void add_32(int* A, int* B, int * result, int* carry) {
 	}
 }
 
-/* soustrait 2 entiers de 128 bits représentés en tableaux de 32bits*/
+/* soustrait 2 entiers (A-B) de 128 bits reprï¿½sentï¿½s en tableaux de 32bits*/
 void sub_128(int* A, int* B, int* result) {
 	int carry = 0;
 
@@ -53,7 +53,7 @@ void sub_128(int* A, int* B, int* result) {
 
 
 
-/*Fonction pour additionner 2 ou plus 128 bits représentés en tableaux de 32bits*/
+/*Fonction pour additionner 2 ou plus 128 bits reprï¿½sentï¿½s en tableaux de 32bits*/
 void add(int *tab_res, int num,...) {
    va_list valist;
    int i;
@@ -68,7 +68,7 @@ void add(int *tab_res, int num,...) {
    va_end(valist);
 }
 
-/*Fonction pour soustraire 2 ou plus 128 bits représentés en tableaux de 32bits
+/*Fonction pour soustraire 2 ou plus 128 bits reprï¿½sentï¿½s en tableaux de 32bits
  * exemple sub(res, 3, A, B, C) met dans res A-B-C
  * */
 void sub(int *tab_res, int num,...) {
@@ -105,31 +105,48 @@ void mult_128(int* A, int* B, int* result) {
 	for (int i = 4; i >= 0; i--) {
 		for (int j = 4; j >= 0; j--) {
 			tempo = (int64_t)A[j]*(int64_t)B[i];
-			// Pour chaque multiplication, on récupère les bits de poids forts et les bits de poids faibles
-			tab[compteur][9+i+j-8] = tempo & 0x7FFFFFFF; // Récupération des bits de poids faibles en mettant les bits de poids forts à 0
-			tab[compteur][9+i+j-9] = tempo >> 31; // Récupération des bits de poids forts en décalant vers la gauche
+			// Pour chaque multiplication, on rï¿½cupï¿½re les bits de poids forts et les bits de poids faibles
+			tab[compteur][9+i+j-8] = tempo & 0x7FFFFFFF; // Rï¿½cupï¿½ration des bits de poids faibles en mettant les bits de poids forts ï¿½ 0
+			tab[compteur][9+i+j-9] = tempo >> 31; // Rï¿½cupï¿½ration des bits de poids forts en dï¿½calant vers la gauche
 			compteur += 1;
 		}
 	}
-	// On additionne les différents résultats intérmédiaires
+	// On additionne les diffï¿½rents rï¿½sultats intï¿½rmï¿½diaires
 	// Par exemple, (A0B0)poids faible + 0, puis (A0*B0*)poids fort + (A1*B0)poids faible + (A0*B1)poids faible, ...
 	int tempCarry = 0;
+
 	int carry = 0;
-	// Le résultat sera stocké dans l'array result
-	result = (int [10]){0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // On réinitialise le tableau contenant le résultat au cas où
-	// On réalise les différentes additions
+	// Le rï¿½sultat sera stockï¿½ dans l'array tempoResult
+	int tempoResult[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // On rï¿½initialise le tableau contenant le rï¿½sultat au cas oï¿½
+	// On rï¿½alise les diffï¿½rentes additions
 	for (int k = 9; k >= 0; k--) {
-		result[k] = carry;
+		tempoResult[k] = carry;
 		carry = 0;
 		for (int l = 0; l < 25; l++) {
-			add_32(&result[k], &tab[l][k], &result[k], &tempCarry);
+			add_32(&tempoResult[k], &tab[l][k], &tempoResult[k], &tempCarry);
 			carry = carry + tempCarry;
 			tempCarry = 0;
 		}
 	}
-	// Affichage du résultat
-	for (int i = 0; i < 10; i++)
-		printf("%d ", result[i]);
+
+	// on veut que les 5 premier de rï¿½sultat car au vu du code cela ne devrait rester sous 128bits
+	result[0] = tempoResult[5];
+	result[1] = tempoResult[6];
+	result[2] = tempoResult[7];
+	result[3] = tempoResult[8];
+	result[4] = tempoResult[9];
+}
+
+void shiftLeft(int *A, int nb, int* resultat) {
+	int zero[5] = {0, 0, 0, 0, 0};
+	add_128(A, zero, resultat);
+	printf("resultat %d\n", resultat[4]);
+	int deux[5] = {0, 0, 0, 0, 2};
+	for(int i = 0; i < nb; i ++) {
+		mult_128(resultat, deux, resultat);
+		printf("resultat %d\n", resultat[4]);
+	}
+
 }
 
 // Fonction aide pour afficher matrice
