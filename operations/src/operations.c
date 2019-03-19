@@ -140,11 +140,9 @@ void mult_128(int* A, int* B, int* result) {
 void shiftLeft(int *A, int nb, int* resultat) {
 	int zero[5] = {0, 0, 0, 0, 0};
 	add_128(A, zero, resultat);
-	printf("resultat %d\n", resultat[4]);
 	int deux[5] = {0, 0, 0, 0, 2};
 	for(int i = 0; i < nb; i ++) {
 		mult_128(resultat, deux, resultat);
-		printf("resultat %d\n", resultat[4]);
 	}
 
 }
