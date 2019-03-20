@@ -48,7 +48,7 @@ void sub_128(int* A, int* B, int* result) {
 			printf("problem detected!\n");
 	}
 	else
-		printf("A doit �tre sup�rieur ou �gal � B.");
+		printf("A doit �tre sup�rieur ou �gal � B.\n");
 }
 
 
