@@ -71,7 +71,7 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 	for(int i = 0; i < NB_COEFF; i ++) {
 		// Update les constantes * tmp_q
 		for(int j = 0; j< NB_COEFF; j ++) {
-			indice = i - j;
+			indice =  j - i;
 			if(indice < 0){
 				indice = indice + NB_COEFF;
 			}
@@ -81,7 +81,7 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 
 		// Addition sans *2
 		for(j = 0; j < i + 1; j ++) {
-			indice = i - j;
+			indice = j - i;
 			if(indice < 0){
 				indice = indice + NB_COEFF;
 			}
@@ -93,7 +93,7 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 		// Addition avec * 2
 		// * 2 à faire
 		for(j= i+1; j < NB_COEFF; j ++) {
-			indice = i - j;
+			indice = j - i;
 			if(indice < 0){
 				indice = indice + NB_COEFF;
 			}
@@ -109,7 +109,7 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 
 		// Soustraction sans *2
 		for(j = 0; j < i + 1; j ++) {
-			indice = i - j;
+			indice = j - i;
 			if(indice < 0){
 				indice = indice + NB_COEFF;
 			}
@@ -121,7 +121,7 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 		// Soustraction avec * 2
 		// * 2 à faire
 		for(j= i+1; j < NB_COEFF; j ++) {
-			indice = i - j;
+			indice = j - i;
 			if(indice < 0){
 				indice = indice + NB_COEFF;
 			}
