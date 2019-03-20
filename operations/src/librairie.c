@@ -44,7 +44,7 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 		}
 		add(tempo_res2 ,10, tempo_res[0],tempo_res[1],tempo_res[2],tempo_res[3],tempo_res[4],tempo_res[5],tempo_res[6],tempo_res[7],tempo_res[8],tempo_res[9]);
 		if(j < 8) {
-			mult_128(&tmp_q[j][0], tempo_res2, constante_mult);
+			mult_128(tmp_q[j], tempo_res2, constante_mult);
 		}
 
 	}
