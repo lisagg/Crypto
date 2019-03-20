@@ -17,6 +17,7 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 	int tmp_zero[NB_COEFF][5]; //int 128 sans [5]
 	int tempo_res[NB_COEFF][5];
 	int tempo_res2[5];
+	int tmp_mult[NB_COEFF][5] = {0};
 
 //~ computation of : op*neg_inv_ri_rep_coeff mod((X^n - c), mont_phi)
 	int constantes[10][5] = {{0,0,3,265232453,1301075987},
@@ -63,26 +64,74 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 	};
 	int coeff[10] = {0, 1, 1, 0, 1, 0, 1, 1, 1, 0};  // 0 correspond à un - et 1 à un +
 	int j;
-	for(int i = 0; i< NB_COEFF; i ++) {
-		mult_128(constantes2[i], tmp_q[i], tempo_res[i]);
-	}
+
+	// Tableau pour faire la multiplication *2
+	int deux[5] = {0, 0, 0, 0, 2};
+
 	for(int i = 0; i < NB_COEFF; i ++) {
-		for(j= i+1; j < NB_COEFF; j ++) {
-			if(coeff[j] == 0){
-				sub_128(tmp_zero[i], tempo_res[j], tmp_zero[i]);
-			} else {
+		// Update les constantes * tmp_q
+		for(int j = 0; j< NB_COEFF; j ++) {
+			indice = i - j;
+			if(indice < 0){
+				indice = indice + NB_COEFF;
+			}
+			mult_128(constantes2[indice], tmp_q[j], tempo_res[j]);
+		}
+
+
+		// Addition sans *2
+		for(j = 0; j < i + 1; j ++) {
+			indice = i - j;
+			if(indice < 0){
+				indice = indice + NB_COEFF;
+			}
+			if(coeff[indice] == 0) {
 				add_128(tmp_zero[i], tempo_res[j], tmp_zero[i]);
 			}
 		}
-		int deux[5] = {0, 0, 0, 0, 2};
-		if(i < 8){
-			mult_128(tmp_zero[i], deux, tmp_zero[i]);
+
+		// Addition avec * 2
+		// * 2 à faire
+		for(j= i+1; j < NB_COEFF; j ++) {
+			indice = i - j;
+			if(indice < 0){
+				indice = indice + NB_COEFF;
+			}
+			if(coeff[indice] == 1){
+				if(i < 8){
+					mult_128(tmp_zero[i], deux, tmp_mult[i]);
+					add_128(tmp_zero[i], tmp_mult[j], tmp_zero[i]);
+				}
+				else
+					add_128(tmp_zero[i], tempo_res[j], tmp_zero[i]);
+			}
 		}
+
+		// Soustraction sans *2
 		for(j = 0; j < i + 1; j ++) {
-			if(coeff[j] == 0){
-				add_128(tmp_zero[i], tempo_res[j], tmp_zero[i]);
-			} else {
+			indice = i - j;
+			if(indice < 0){
+				indice = indice + NB_COEFF;
+			}
+			if(coeff[indice] == 1) {
 				sub_128(tmp_zero[i], tempo_res[j], tmp_zero[i]);
+			}
+		}
+
+		// Soustraction avec * 2
+		// * 2 à faire
+		for(j= i+1; j < NB_COEFF; j ++) {
+			indice = i - j;
+			if(indice < 0){
+				indice = indice + NB_COEFF;
+			}
+			if(coeff[indice] == 0){
+				if(i < 8){
+					mult_128(tmp_zero[i], deux, tmp_mult[i]);
+					sub_128(tmp_zero[i], tmp_mult[j], tmp_zero[i]);
+				}
+				else
+					sub_128(tmp_zero[i], tempo_res[j], tmp_zero[i]);
 			}
 		}
 	}
