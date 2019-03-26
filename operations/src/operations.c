@@ -7,7 +7,7 @@ void add_128(int* A, int* B, int* result) {
 	for (int i = 4; i >= 0; i--) {
 		result[i] = A[i] + B[i] + carry;
 		if (result[i]<0) {
-			result[i] = result[i] + pow(2,31);
+			result[i] = result[i] + (1 << 31);
 			carry = 1;
 		}
 		else
@@ -21,7 +21,7 @@ void add_128(int* A, int* B, int* result) {
 void add_32(int* A, int* B, int * result, int* carry) {
 	*result = *A + *B;
 	if( *result < 0){
-		*result = *result + pow(2,31);
+		*result = *result + (1 << 31);
 		*carry = 1;
 	} else {
 		carry =0;
@@ -36,7 +36,7 @@ void sub_128(int* A, int* B, int* result) {
 	if (isBiggerOrEqual(A, B)) {
 		for (int i = 4; i >= 0; i--) {
 			if (A[i] < B[i] + carry) {
-				result[i] = pow(2,31) + A[i] - B[i] - carry;
+				result[i] = (1 << 31) + A[i] - B[i] - carry;
 				carry = 1;
 			}
 			else {
@@ -60,6 +60,12 @@ void add(int *tab_res, int num,...) {
 
    /* initialize valist for num number of arguments */
    va_start(valist, num);
+
+   /* initialise tab res*/
+   for (i = 0; i < 10; i ++) {
+	   tab_res[0] = 0;
+   }
+
    /* access all the arguments assigned to valist */
    for (i = 0; i < num; i++) {
 	   add_128(va_arg(valist, int*), tab_res, tab_res );
@@ -77,6 +83,12 @@ void sub(int *tab_res, int num,...) {
 
    /* initialize valist for num number of arguments */
    va_start(valist, num);
+
+   /* initialise tab res*/
+   for (i = 0; i < 10; i ++) {
+	   tab_res[0] = 0;
+   }
+
    add_128(tab_res, va_arg(valist, int*), tab_res);
    /* access all the arguments assigned to valist */
    for (i = 1; i < num; i++) {

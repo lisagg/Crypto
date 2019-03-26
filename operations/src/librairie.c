@@ -1,4 +1,4 @@
-3/*
+/*
  * librairie.c
  *
  *  Created on: 16 mars 2019
@@ -11,7 +11,7 @@
 #define WORD_SIZE 64
 
 //rop et op sont des polynomes représentés en pmns et suivant notre base donc se sont des tableau du type rop[NB_COEFF][5]
-void internal_reduction(int *rop, int *op) { // int 64 et int 128
+void internal_reduction(int **rop, int **op) {
 
 	int tmp_q[NB_COEFF][5]; //uint64_t sans [5]
 	int tmp_zero[NB_COEFF][5]; //int 128 sans [5]
@@ -40,7 +40,7 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 			if(indice < 0){
 				indice = indice + NB_COEFF;
 			}
-			mult_128(&op[i], constantes[indice],tempo_res[i]);
+			mult_128(op[i], constantes[indice],tempo_res[i]);
 		}
 		add(tempo_res2 ,10, tempo_res[0],tempo_res[1],tempo_res[2],tempo_res[3],tempo_res[4],tempo_res[5],tempo_res[6],tempo_res[7],tempo_res[8],tempo_res[9]);
 		if(j < 8) {
@@ -138,7 +138,7 @@ void internal_reduction(int *rop, int *op) { // int 64 et int 128
 
 //~ computation of : (op + tmp_zero)/mont_phi
 	for(int i = 0; i < NB_COEFF; i++) {
-		add_128(&op[i], tmp_zero[i], &rop[i]);
-		shiftLeft(&rop[i], WORD_SIZE, &rop[i]);
+		add_128(op[i], tmp_zero[i], rop[i]);
+		shiftLeft(rop[i], WORD_SIZE, rop[i]);
 	}
 }

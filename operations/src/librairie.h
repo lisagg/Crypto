@@ -8,6 +8,6 @@
 #ifndef LIBRAIRIE_H_
 #define LIBRAIRIE_H_
 
-void internal_reduction(int *rop, int *op);
+void internal_reduction(int **rop, int **op);
 
 #endif /* LIBRAIRIE_H_ */
